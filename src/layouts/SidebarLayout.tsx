@@ -1,4 +1,5 @@
-import SidebarCards from '@/components/cards/SidebarCards'
+import SidebarLeft from '@/components/layout/sidebar/SidebarLeft'
+import ArticlePreviewList from '@/features/articles/components/ArticlePreviewList'
 
 type SidebarLayoutPorps = {
   children: React.ReactNode
@@ -7,7 +8,9 @@ type SidebarLayoutPorps = {
 export default function SidebarLayout({ children }: SidebarLayoutPorps) {
   return (
     <main className="flex h-screen">
-      <SidebarCards />
+      <SidebarLeft>
+        <ArticlePreviewList />
+      </SidebarLeft>
       <div className="flex flex-1 flex-col">{children}</div>
     </main>
   )

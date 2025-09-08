@@ -1,8 +1,8 @@
 import { useStore } from '@/store/appStore'
 import type { TClaimCard } from '@/types/compTypes'
-import ClaimCard from './ClaimCard'
+import ClaimCard from '@/features/claims/components/ClaimCard'
 import { useEffect, useState } from 'react'
-import ClaimDetailsModal from './ClaimDetailsModal'
+import ClaimDetailsModal from '@/features/claims/components/ClaimDetailsModal'
 import ArticleRiskCard from './ArticleRiskCard'
 
 export default function ArticleMain() {

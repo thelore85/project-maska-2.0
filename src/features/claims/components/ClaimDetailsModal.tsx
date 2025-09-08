@@ -1,4 +1,4 @@
-import { Modal } from '../ui/Modal'
+import { Modal } from '../../../components/common/Modal'
 import type { TClaimCard } from '@/types/compTypes'
 
 type ClaimDetailsProps = {

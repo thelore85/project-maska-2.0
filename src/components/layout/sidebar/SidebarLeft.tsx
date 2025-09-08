@@ -1,9 +1,12 @@
-import LogoMain from '../navigation/LogoMain'
+import LogoMain from '../../common/LogoMain'
 // import ButtonSetting from '../cta/ButtonSetting'
-import ArticlePreviewList from './ArticlePreviewList'
 import { useStore } from '@/store/appStore'
 
-export default function SidebarCards() {
+type SidebarProps = {
+  children?: React.ReactNode
+}
+
+export default function Sidebar({ children }: SidebarProps) {
   const selectCard = useStore((state) => state.selectCard)
 
   const handleResetCardSelection = () => {
@@ -21,7 +24,7 @@ export default function SidebarCards() {
       <div className="p-4">{/* <SearchInput placeholder="Search Scrapers" /> */}</div>
 
       {/* Sidebar Body  */}
-      <ArticlePreviewList />
+      {children}
       {/* Sidebar Footer  */}
       {/* <div className="mx-4 border-t-1 border-gray-100 py-4">
         <ButtonSetting label="Settings" />

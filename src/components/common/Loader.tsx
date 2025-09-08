@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Progress } from '@/components/ui/progress'
-import LogoMain from '../navigation/LogoMain'
+import LogoMain from './LogoMain'
 
 export default function Loader() {
   // Utility

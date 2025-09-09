@@ -1,6 +1,6 @@
 import LogoMain from '../../common/LogoMain'
-// import ButtonSetting from '../cta/ButtonSetting'
 import { useStore } from '@/store/appStore'
+import LogoutButton from '@/features/auth/components/LogoutButton'
 
 type SidebarProps = {
   children?: React.ReactNode
@@ -26,9 +26,9 @@ export default function Sidebar({ children }: SidebarProps) {
       {/* Sidebar Body  */}
       {children}
       {/* Sidebar Footer  */}
-      {/* <div className="mx-4 border-t-1 border-gray-100 py-4">
-        <ButtonSetting label="Settings" />
-      </div> */}
+      <div className="mx-4 border-t-1 border-gray-100 py-4">
+        <LogoutButton />
+      </div>
     </aside>
   )
 }

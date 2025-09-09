@@ -1,7 +1,7 @@
-import { CheckCircle } from 'lucide-react'
+import { CheckCircle, Loader } from 'lucide-react'
 
 import repsolLogo from '@/assets/logos/repsol.jpeg'
-import Button from '@/components/cta/Buttons'
+import LoginButton from './LoginButton'
 
 export default function BackupCard() {
   // const restartApp = useStore((state) => state.restartApp)
@@ -29,9 +29,7 @@ export default function BackupCard() {
             ))}
           </ul>
 
-          <Button variant="primary" onClick={() => {}}>
-            Login
-          </Button>
+          <LoginButton />
         </div>
 
         {/* Repsol card  */}

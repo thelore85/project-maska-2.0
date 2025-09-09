@@ -1,21 +1,17 @@
-const API_URL = import.meta.env.VITE_API_URL
+import { ensureSignedIn, getAccessToken } from '../utils/msalClient'
+const API_BASE = import.meta.env.VITE_API_BASE
 
-export const authAPI = {
-  async login(body: { email: string; password: string }) {
-    const res = await fetch(`${API_URL}/api/auth/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-    })
-    if (!res.ok) throw new Error(`HTTP ${res.status}`)
-    return res.json() as Promise<{ token: string; user: { id: string; email: string } }>
-  },
+export async function callMe() {
+    await ensureSignedIn()
+    const token = await getAccessToken()
 
-  async me(token?: string) {
-    const res = await fetch(`${API_URL}/api/auth/me`, {
-      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    const r = await fetch(`${API_BASE}/auth/me`, {
+        headers: { Authorization: `Bearer ${token}` }
     })
-    if (!res.ok) throw new Error(`HTTP ${res.status}`)
-    return res.json() as Promise<{ user: { id: string; email: string } }>
-  },
+
+    if (!r.ok) throw new Error(`API error ${r.status}`)
+
+    console.log('//////////r.json()', r.json())
+
+    return r.json()
 }

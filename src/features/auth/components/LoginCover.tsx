@@ -1,13 +1,10 @@
 import { CheckCircle, Loader } from 'lucide-react'
 
 import repsolLogo from '@/assets/logos/repsol.jpeg'
-import Button from '@/components/cta/Buttons'
-import { useAzureLogin } from '../api/auth.hooks'
+import LoginButton from './LoginButton'
 
 export default function BackupCard() {
   // const restartApp = useStore((state) => state.restartApp)
-  const { data, isLoading, refetch } = useAzureLogin(false)
-  console.log('//////////data', data)
 
   const greenWasherBullets = [
     'Analyze your brand’s sustainability claims for regulatory compliance',
@@ -32,9 +29,7 @@ export default function BackupCard() {
             ))}
           </ul>
 
-          <Button variant="primary" onClick={() => refetch()}>
-            {isLoading ? <Loader className="animate-spin" /> : <span>Login</span>}
-          </Button>
+          <LoginButton />
         </div>
 
         {/* Repsol card  */}

@@ -10,11 +10,11 @@ import { msal } from '@/features/auth/utils/msalClient'
 const queryClient = new QueryClient()
 
 createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <MsalProvider instance={msal}>
-        <App />
-      </MsalProvider>
-    </QueryClientProvider>
-  </StrictMode>,
+    <StrictMode>
+        <QueryClientProvider client={queryClient}>
+            <MsalProvider instance={msal}>
+                <App />
+            </MsalProvider>
+        </QueryClientProvider>
+    </StrictMode>
 )

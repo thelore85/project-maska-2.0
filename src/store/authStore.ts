@@ -14,7 +14,7 @@ type AuthState = {
 }
 
 type AuthActions = {
-  login: (payload: { token: string; user: User }) => void
+  login: () => void
   logout: () => void
 }
 
@@ -28,22 +28,20 @@ export const useAuthStore = create<AuthState & AuthActions>()(
   persist(
     (set) => ({
       ...initialState,
-      login: ({ token, user }) =>
+      login: () =>
         set({
           isAuthenticated: true,
-          token,
-          user,
         }),
       logout: () => set({ ...initialState }),
     }),
     {
       name: 'authStorage',
       storage: createJSONStorage(() => localStorage),
-      partialize: (state) => ({
-        isAuthenticated: state.isAuthenticated,
-        token: state.token,
-        user: state.user,
-      }),
+      // partialize: (state) => ({
+      //   isAuthenticated: state.isAuthenticated,
+      //   token: state.token,
+      //   user: state.user,
+      // }),
     },
   ),
 )

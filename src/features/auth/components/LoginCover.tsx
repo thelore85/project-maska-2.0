@@ -2,9 +2,11 @@ import { CheckCircle } from 'lucide-react'
 
 import repsolLogo from '@/assets/logos/repsol.jpeg'
 import Button from '@/components/cta/Buttons'
+import { useAuthStore } from '@/store/authStore'
 
 export default function BackupCard() {
   // const restartApp = useStore((state) => state.restartApp)
+  const login = useAuthStore((store) => store.login)
 
   const greenWasherBullets = [
     'Analyze your brand’s sustainability claims for regulatory compliance',
@@ -29,7 +31,7 @@ export default function BackupCard() {
             ))}
           </ul>
 
-          <Button variant="primary" onClick={() => {}}>
+          <Button variant="primary" onClick={() => login()}>
             Login
           </Button>
         </div>

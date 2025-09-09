@@ -11,5 +11,7 @@ export async function callMe() {
 
   if (!r.ok) throw new Error(`API error ${r.status}`)
 
+  console.log('//////////r.json()', r.json())
+
   return r.json()
 }

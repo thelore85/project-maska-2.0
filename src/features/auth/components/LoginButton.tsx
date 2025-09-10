@@ -1,37 +1,116 @@
 import Button from '@/components/cta/Buttons'
-import { useAuthStore } from '@/store/authStore'
-import { useAzureLogin } from '../api/auth.hooks'
-import { logout } from '../utils/msalClient'
+import { useAuth } from '../hooks/useAuth'
 import { callMe } from '../api/auth.api'
+import { useState } from 'react'
 
 export default function LoginButton() {
-    const { logout: logoutStore } = useAuthStore()
-    const { data, isLoading, refetch } = useAzureLogin(false)
+    const { isAuthenticated, user, login, logout, getToken, isLoading } = useAuth()
+    const [apiData, setApiData] = useState<any>(null)
+    const [apiLoading, setApiLoading] = useState(false)
 
-    const handleLogout = () => {
-        logoutStore() // Pulisce lo store
-        logout() // Logout da MSAL
+    const handleLogin = async (usePopup: boolean = false) => {
+        try {
+            await login(usePopup)
+        } catch (error) {
+            console.error('Login failed:', error)
+        }
     }
 
-    const handleDirectCall = async () => {
-        await callMe()
+    const handleLogout = async () => {
+        try {
+            await logout()
+            setApiData(null)
+        } catch (error) {
+            console.error('Logout failed:', error)
+        }
+    }
+
+    const handleGetToken = async () => {
+        try {
+            const token = await getToken()
+            console.log('🔑 Current token:', token ? `${token.substring(0, 50)}...` : 'NULL')
+        } catch (error) {
+            console.error('Token retrieval failed:', error)
+        }
+    }
+
+    const handleApiCall = async () => {
+        try {
+            setApiLoading(true)
+            const data = await callMe()
+            setApiData(data)
+        } catch (error) {
+            console.error('API call failed:', error)
+            setApiData({ error: error instanceof Error ? error.message : 'Unknown error' })
+        } finally {
+            setApiLoading(false)
+        }
+    }
+
+    if (!isAuthenticated) {
+        return (
+            <div className="space-y-4">
+                <h2 className="text-xl font-bold">Authentication Required</h2>
+                <div className="space-x-2">
+                    <Button 
+                        variant="primary" 
+                        onClick={() => handleLogin(false)}
+                        disabled={isLoading}
+                    >
+                        {isLoading ? 'Loading...' : 'Login (Redirect)'}
+                    </Button>
+                    <Button 
+                        variant="secondary" 
+                        onClick={() => handleLogin(true)}
+                        disabled={isLoading}
+                    >
+                        {isLoading ? 'Loading...' : 'Login (Popup)'}
+                    </Button>
+                </div>
+            </div>
+        )
     }
 
     return (
-        <>
-            <Button variant="primary" onClick={() => refetch()}>
-                {isLoading ? 'Loading...' : "FETCH API 'call me'"}
-            </Button>
-            <Button variant="tertiary" onClick={() => handleDirectCall()}>
-                DIRECT FETCH API /auth/me
-            </Button>
-            <Button variant="tertiary" onClick={() => handleLogout()}>
-                Logout
-            </Button>
-
-            <div className="mt-10 mb-4 rounded-4xl bg-gray-50 px-4 py-2">
-                <p>{data?.message}</p>
+        <div className="space-y-4">
+            <div className="bg-green-50 p-4 rounded">
+                <h2 className="text-xl font-bold text-green-800">Authenticated ✅</h2>
+                <p className="text-green-600">User: {user?.email}</p>
+                <p className="text-green-600">ID: {user?.id}</p>
             </div>
-        </>
+
+            <div className="space-x-2">
+                <Button 
+                    variant="tertiary" 
+                    onClick={handleGetToken}
+                    disabled={isLoading}
+                >
+                    Show Token
+                </Button>
+                <Button 
+                    variant="primary" 
+                    onClick={handleApiCall}
+                    disabled={apiLoading}
+                >
+                    {apiLoading ? 'Loading...' : 'Call API /auth/me'}
+                </Button>
+                <Button 
+                    variant="secondary" 
+                    onClick={handleLogout}
+                    disabled={isLoading}
+                >
+                    {isLoading ? 'Loading...' : 'Logout'}
+                </Button>
+            </div>
+
+            {apiData && (
+                <div className="mt-4 p-4 bg-gray-50 rounded">
+                    <h3 className="font-bold">API Response:</h3>
+                    <pre className="text-sm overflow-auto">
+                        {JSON.stringify(apiData, null, 2)}
+                    </pre>
+                </div>
+            )}
+        </div>
     )
 }

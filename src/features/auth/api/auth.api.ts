@@ -1,17 +1,25 @@
-import { ensureSignedIn, getAccessToken } from '../utils/msalClient'
+import { getAccessToken } from '../utils/msalClient'
 const API_BASE = import.meta.env.VITE_API_BASE
 
 export async function callMe() {
-    await ensureSignedIn()
-    const token = await getAccessToken()
+    try {
+        const token = await getAccessToken()
+        const response = await fetch(`${API_BASE}/auth/me`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        })
 
-    const r = await fetch(`${API_BASE}/auth/me`, {
-        headers: { Authorization: `Bearer ${token}` }
-    })
+        if (!response.ok) {
+            throw new Error(`API error: ${response.status} ${response.statusText}`)
+        }
 
-    if (!r.ok) throw new Error(`API error ${r.status}`)
+        const data = await response.json()
 
-    console.log('//////////r.json()', r.json())
-
-    return r.json()
+        return data
+    } catch (error) {
+        console.error('❌ callMe failed:', error)
+        throw error
+    }
 }

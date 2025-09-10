@@ -17,6 +17,7 @@ type AuthActions = {
     login: () => void
     logout: () => void
     setToken: (token: string | null) => void
+    setUser: (user: User | null) => void
 }
 
 const initialState: AuthState = {
@@ -38,6 +39,11 @@ export const useAuthStore = create<AuthState & AuthActions>()(
                 set({
                     token,
                     isAuthenticated: !!token
+                }),
+            setUser: (user: User | null) =>
+                set({
+                    user,
+                    isAuthenticated: !!user
                 })
         }),
         {

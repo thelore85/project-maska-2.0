@@ -17,6 +17,8 @@ export async function callMe() {
 
         const data = await response.json()
 
+        console.log('✅ callMe success:', data)
+
         return data
     } catch (error) {
         console.error('❌ callMe failed:', error)

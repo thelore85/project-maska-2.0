@@ -9,7 +9,7 @@ type Props = {
     disabled?: boolean
 }
 
-export default function Buttons({ children, label, variant, onClick, type, disabled }: Props) {
+export default function Button({ children, label, variant, onClick, type, disabled }: Props) {
     const baseStyle = 'flex items-center justify-center bg-primary mb-3 flex pointer w-full text-center rounded-2xl px-4 py-2'
 
     const primary = variant === 'primary' && 'bg-primary text-primary-foreground hover:bg-secondary'

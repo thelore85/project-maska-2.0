@@ -1,6 +1,6 @@
 // New file: client/src/store/authStore.ts
 import { create } from 'zustand'
-import { persist, createJSONStorage } from 'zustand/middleware'
+import { persist, createJSONStorage, devtools } from 'zustand/middleware'
 
 type User = {
     id: string
@@ -27,33 +27,36 @@ const initialState: AuthState = {
 }
 
 export const useAuthStore = create<AuthState & AuthActions>()(
-    persist(
-        (set) => ({
-            ...initialState,
-            login: () =>
-                set({
-                    isAuthenticated: true
-                }),
-            logout: () => set({ ...initialState }),
-            setToken: (token: string | null) =>
-                set({
-                    token,
-                    isAuthenticated: !!token
-                }),
-            setUser: (user: User | null) =>
-                set({
-                    user,
-                    isAuthenticated: !!user
-                })
-        }),
-        {
-            name: 'authStorage',
-            storage: createJSONStorage(() => localStorage)
-            // partialize: (state) => ({
-            //   isAuthenticated: state.isAuthenticated,
-            //   token: state.token,
-            //   user: state.user,
-            // }),
-        }
+    devtools(
+        persist(
+            (set) => ({
+                ...initialState,
+                login: () =>
+                    set({
+                        isAuthenticated: true
+                    }),
+                logout: () => set({ ...initialState }),
+                setToken: (token: string | null) =>
+                    set({
+                        token,
+                        isAuthenticated: !!token
+                    }),
+                setUser: (user: User | null) =>
+                    set({
+                        user,
+                        isAuthenticated: !!user
+                    })
+            }),
+            {
+                name: 'authStorage',
+                storage: createJSONStorage(() => localStorage)
+                // partialize: (state) => ({
+                //   isAuthenticated: state.isAuthenticated,
+                //   token: state.token,
+                //   user: state.user,
+                // }),
+            }
+        ),
+        { name: 'authStore' }
     )
 )

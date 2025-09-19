@@ -1,22 +1,18 @@
 import LogoMain from '../../common/LogoMain'
-import { useStore } from '@/store/appStore'
 import LogoutButton from '@/features/auth/components/LogoutButton'
+import { useAuthStore } from '@/store/authStore'
+import LoginButton from '@/features/auth/components/LoginButton'
 
 type SidebarProps = {
     children?: React.ReactNode
 }
 
 export default function Sidebar({ children }: SidebarProps) {
-    const selectCard = useStore((state) => state.selectCard)
-
-    const handleResetCardSelection = () => {
-        selectCard(null)
-    }
-
+    const isAuthenticated = useAuthStore((store) => store.isAuthenticated)
     return (
         <aside className="flex w-64 flex-col bg-gray-300">
             {/* Header  */}
-            <div className="flex min-h-[8vh] items-center bg-gray-300 px-4 shadow" onClick={handleResetCardSelection}>
+            <div className="flex min-h-[8vh] items-center bg-gray-300 px-4 shadow">
                 <LogoMain />
             </div>
 
@@ -25,9 +21,7 @@ export default function Sidebar({ children }: SidebarProps) {
 
             <div className="h-full overflow-auto p-4">{children}</div>
             {/* Sidebar Footer  */}
-            <div className="mx-4 border-t-1 border-gray-100 py-4">
-                <LogoutButton />
-            </div>
+            <div className="mx-4 border-t-1 border-gray-100 py-4">{isAuthenticated ? <LogoutButton /> : <LoginButton />}</div>
         </aside>
     )
 }

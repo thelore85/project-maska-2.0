@@ -7,6 +7,7 @@ export default function LoginCard() {
     const { isAuthenticated, user, login, logout, getToken, isLoading } = useAuth()
     const [apiData, setApiData] = useState<any>(null)
     const [apiLoading, setApiLoading] = useState(false)
+    const [token, setToken] = useState<string | null>(null)
 
     const handleLogin = async (usePopup: boolean = false) => {
         try {
@@ -28,6 +29,7 @@ export default function LoginCard() {
     const handleGetToken = async () => {
         try {
             const token = await getToken()
+            setToken(token)
             console.log('🔑 Current token:', token ? token : 'NULL')
         } catch (error) {
             console.error('Token retrieval failed:', error)
@@ -69,6 +71,7 @@ export default function LoginCard() {
                 <h2 className="text-xl font-bold text-green-800">Authenticated ✅</h2>
                 <p className="text-green-600">User: {user?.email}</p>
                 <p className="text-green-600">ID: {user?.id}</p>
+                <p className="text-green-600">Token: {token}</p>
             </div>
 
             <div className="space-x-2">

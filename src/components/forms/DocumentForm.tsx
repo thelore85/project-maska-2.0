@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react'
 import { Button } from '@/components/ui/button'
 import { UploadIcon, FileIcon, XIcon, CheckCircleIcon, TestTube } from 'lucide-react'
-import { usePresignUpload } from '@/features/documents/api'
+import { useDocumentUpload } from '@/features/documents/api'
 
 type DocumentFile = {
     id: string
@@ -47,7 +47,7 @@ export function DocumentForm({
 
     const [dragActive, setDragActive] = useState(false)
     const fileInputRef = useRef<HTMLInputElement>(null)
-    const presignMutation = usePresignUpload()
+    const documentUpload = useDocumentUpload()
 
     const handleInputChange = (field: keyof Pick<DocumentFormData, 'title' | 'description'>, value: string) => {
         setFormData((prev) => ({ ...prev, [field]: value }))
@@ -174,23 +174,36 @@ export function DocumentForm({
     }
 
     const handleTestAPI = async () => {
-        const testData = {
-            company_id: 752,
-            kind: 'docs',
-            filename: 'test-document.pdf',
-            content_type: 'application/pdf'
-            // size_bytes: 1024000,
-            // sha256: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855',
-            // claim_id: 1,
-            // note: 'Test document upload'
-        }
-
         try {
-            console.log('Testing presign API with data:', testData)
-            const response = await presignMutation.mutateAsync(testData)
-            console.log('OK - Presign API Response:', response)
+            // Load real PDF file from public assets
+            const response = await fetch('/assets/file-test.pdf')
+            const blob = await response.blob()
+            const testFile = new File([blob], 'file-test.pdf', {
+                type: 'application/pdf'
+            })
+
+            const testMetadata = {
+                company_id: 2,
+                kind: 'docs',
+                filename: 'file-test.pdf',
+                content_type: 'application/pdf'
+                // size_bytes: testFile.size,
+                // sha256: 'calculated_hash_here',
+                // claim_id: 1,
+                // note: 'Real PDF file test upload'
+            }
+
+            console.log('Testing document upload with real PDF file:', {
+                fileName: testFile.name,
+                fileSize: testFile.size,
+                fileType: testFile.type,
+                metadata: testMetadata
+            })
+
+            const uploadResponse = await documentUpload.mutateAsync({ file: testFile, metadata: testMetadata })
+            console.log('OK - Document Upload Response:', uploadResponse)
         } catch (error) {
-            console.error('KO - Presign API Error:', error)
+            console.error('KO - Document Upload Error:', error)
         }
     }
 
@@ -298,9 +311,9 @@ export function DocumentForm({
 
             {/* Test API Button */}
             <div className="pt-2">
-                <Button type="button" variant="outline" onClick={handleTestAPI} disabled={presignMutation.isPending} className="w-full">
+                <Button type="button" variant="outline" onClick={handleTestAPI} disabled={documentUpload.isPending} className="w-full">
                     <TestTube className="mr-2 h-4 w-4" />
-                    {presignMutation.isPending ? 'Testing API...' : 'Test Presign API'}
+                    {documentUpload.isPending ? 'Testing API...' : 'Test Document Upload'}
                 </Button>
             </div>
 

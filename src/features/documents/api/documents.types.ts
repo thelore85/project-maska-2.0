@@ -12,9 +12,23 @@ export interface PresignUploadRequest {
 }
 
 export interface PresignUploadResponse {
-    upload_url: string
-    document_id: string
+    upload_id: number
+    method: string
+    put_url: string
+    blob_url: string
+    required_headers: Record<string, string>
     expires_at: string
+}
+
+export interface CompleteUploadRequest {
+    company_id: number
+    upload_id: number
+}
+
+export interface CompleteUploadResponse {
+    success: boolean
+    document_id: string
+    message?: string
 }
 
 export interface DocumentUploadError {

@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
 import { useAuthStore } from '@/store/authStore'
+import { useUserStore } from '@/store/userStore'
 import { isAuthenticated, getActiveAccount, loginRedirect, loginPopup, logout as msalLogout, getAccessToken, msal } from '../utils/msalClient'
 
 interface UseAuthReturn {
@@ -13,18 +15,22 @@ interface UseAuthReturn {
 
 export function useAuth(): UseAuthReturn {
     const [isLoading, setIsLoading] = useState(false)
-    const { user, isAuthenticated: storeAuth, setUser, logout: clearStore } = useAuthStore()
+    const queryClient = useQueryClient()
+    const { isAuthenticated: storeAuth, logout: clearStore, setToken } = useAuthStore()
+    const { user } = useUserStore()
 
     // Sync MSAL state with store on mount and account changes
     useEffect(() => {
-        const syncAuthState = () => {
+        const syncAuthState = async () => {
             const account = getActiveAccount()
-            if (account && !storeAuth) {
+            if (account && isAuthenticated() && !storeAuth) {
                 // User is authenticated in MSAL but not in store
-                setUser({
-                    id: account.localAccountId,
-                    email: account.username
-                })
+                try {
+                    const token = await getAccessToken()
+                    setToken(token)
+                } catch (error) {
+                    console.error('❌ Failed to get token:', error)
+                }
             } else if (!account && storeAuth) {
                 // User is not authenticated in MSAL but is in store
                 clearStore()
@@ -43,7 +49,7 @@ export function useAuth(): UseAuthReturn {
         return () => {
             msal.removeEventCallback(callbackId as string)
         }
-    }, [storeAuth, setUser, clearStore])
+    }, [storeAuth, clearStore, setToken])
 
     const login = async (usePopup = false): Promise<void> => {
         try {
@@ -64,6 +70,10 @@ export function useAuth(): UseAuthReturn {
     const logout = async (): Promise<void> => {
         try {
             setIsLoading(true)
+
+            // Invalida tutte le query auth prima del logout
+            queryClient.removeQueries({ queryKey: ['auth'] })
+
             clearStore() // Clear store first
             await msalLogout() // Then logout from MSAL
         } catch (error) {
@@ -85,9 +95,15 @@ export function useAuth(): UseAuthReturn {
         }
     }
 
+    // Converti user della userStore nel formato atteso da useAuth
+    const userForAuth = user ? {
+        id: user.id.toString(),
+        email: user.email
+    } : null
+
     return {
         isAuthenticated: isAuthenticated() && storeAuth,
-        user,
+        user: userForAuth,
         login,
         logout,
         getToken,

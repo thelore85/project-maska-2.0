@@ -34,7 +34,6 @@ export async function createCompany(data: CreateCompanyRequest): Promise<CreateC
         }
 
         const result = await response.json()
-        console.log('✅ createCompany success:', result)
 
         return result.company
     } catch (error) {

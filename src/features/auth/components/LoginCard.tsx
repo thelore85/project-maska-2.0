@@ -30,7 +30,6 @@ export default function LoginCard() {
         try {
             const token = await getToken()
             setToken(token)
-            console.log('🔑 Current token:', token ? token : 'NULL')
         } catch (error) {
             console.error('Token retrieval failed:', error)
         }

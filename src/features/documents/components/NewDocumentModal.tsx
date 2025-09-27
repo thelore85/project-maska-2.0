@@ -9,7 +9,7 @@ type DocumentModalProps = {
     onSubmit?: (data: DocumentFormData) => void
 }
 
-export function DocumentModal({ open, onOpenChange, onSubmit }: DocumentModalProps) {
+export function NewDocumentModal({ open, onOpenChange, onSubmit }: DocumentModalProps) {
     const [isLoading, setIsLoading] = useState(false)
 
     const handleSubmit = async (data: DocumentFormData) => {

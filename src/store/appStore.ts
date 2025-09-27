@@ -9,11 +9,9 @@ type AppStore = {
   cardSelected: number | null
   articleSelected: number | null
   searchQuery: string
-
 }
 
 type AppActions = {
-
   setSearchQuery: (query: string) => void
   resetArticleList: () => void
   restartApp: () => void
@@ -22,17 +20,7 @@ type AppActions = {
   selectArticle: (id: number | null) => void
 }
 
-
-const initialState: AppStore = {
-
-  init: true,
-  cardSelected: null,
-  articleSelected: null,
-  claimCards: [],
-  articleList: [],
-  searchQuery: '',
-
-}
+const initialState: AppStore = { init: true, cardSelected: null, articleSelected: null, claimCards: [], articleList: [], searchQuery: '' }
 
 export const useStore = create<AppStore & AppActions>()(
   devtools(
@@ -47,12 +35,12 @@ export const useStore = create<AppStore & AppActions>()(
         restartApp: () => set({ init: false, cardSelected: null, articleSelected: null, claimCards: [], articleList: [], searchQuery: '' }),
         selectCard: (id) => set({ cardSelected: id }),
         resetArticleList: () => set({ articleList: [] }),
-        selectArticle: (id) => set({ articleSelected: id }),
+        selectArticle: (id) => set({ articleSelected: id })
       }),
       {
         name: 'appStorage',
-        storage: createJSONStorage(() => sessionStorage),
-      },
-    ),
-  ),
+        storage: createJSONStorage(() => sessionStorage)
+      }
+    )
+  )
 )

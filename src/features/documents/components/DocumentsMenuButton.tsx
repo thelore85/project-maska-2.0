@@ -3,7 +3,7 @@ import Button from '@/components/cta/Button'
 import { faPlusCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 // import { useCompanyStore } from '@/store/companyStore'
-import { DocumentModal } from './DocumentModal'
+import { NewDocumentModal } from './NewDocumentModal'
 import type { DocumentFormData } from '@/components/forms/DocumentForm'
 
 export default function DocumentsMenuButton() {
@@ -29,7 +29,7 @@ export default function DocumentsMenuButton() {
                 <h1>New Document</h1>
             </Button>
 
-            <DocumentModal open={isModalOpen} onOpenChange={setIsModalOpen} onSubmit={handleSubmit} />
+            <NewDocumentModal open={isModalOpen} onOpenChange={setIsModalOpen} onSubmit={handleSubmit} />
         </>
     )
 }

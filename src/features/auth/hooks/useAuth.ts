@@ -29,7 +29,7 @@ export function useAuth(): UseAuthReturn {
           const token = await getAccessToken()
           setToken(token)
         } catch (error) {
-          console.error('❌ Failed to get token:', error)
+          console.error('Failed to get token:', error)
         }
       } else if (!account && storeAuth) {
         // User is not authenticated in MSAL but is in store

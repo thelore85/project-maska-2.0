@@ -1,45 +1,68 @@
-import { useMutation } from '@tanstack/react-query'
-import { createPresignUpload, uploadFileToAzure, completeUpload } from './documents.api'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import { createPresignUpload, uploadFileToAzure, completeUpload, getDocuments } from './documents.api'
 import type { PresignUploadRequest } from './documents.types'
+import { useDocsStore } from '@/store/docsStore'
+import type { Document } from '@/store/docsStore'
+import { useEffect } from 'react'
 
 export function usePresignUpload() {
-    return useMutation({
-        mutationFn: (data: PresignUploadRequest) => createPresignUpload(data),
-        retry: false
-    })
+  return useMutation({
+    mutationFn: (data: PresignUploadRequest) => createPresignUpload(data),
+    retry: false
+  })
 }
 
 type DocumentUploadParams = {
-    file: File
-    metadata: PresignUploadRequest
+  file: File
+  metadata: PresignUploadRequest
 }
 
 export function useDocumentUpload() {
-    return useMutation({
-        mutationFn: async ({ file, metadata }: DocumentUploadParams) => {
-            // Step 1: Get presigned URL
-            console.log('Step 1: Getting presigned URL...')
-            const presignResponse = await createPresignUpload(metadata)
-            console.log('OK - Step 1 Success - Presign response:', presignResponse)
+  return useMutation({
+    mutationFn: async ({ file, metadata }: DocumentUploadParams) => {
+      // Step 1: Get presigned URL
+      console.log('Step 1: Getting presigned URL...')
+      const presignResponse = await createPresignUpload(metadata)
+      console.log('OK - Step 1 Success - Presign response:', presignResponse)
 
-            // Step 2: Upload file to Azure Storage
-            console.log(' Step 2: Uploading file to Azure...', file)
-            await uploadFileToAzure(file, presignResponse.put_url, presignResponse.required_headers)
-            console.log('OK Step 2 Success - File uploaded to Azure')
+      // Step 2: Upload file to Azure Storage
+      console.log(' Step 2: Uploading file to Azure...', file)
+      await uploadFileToAzure(file, presignResponse.put_url, presignResponse.required_headers)
+      console.log('OK Step 2 Success - File uploaded to Azure')
 
-            // Step 3: Complete upload (inform server of successful upload)
-            console.log('Step 3: Completing upload...', presignResponse.upload_id)
-            const completeResponse = await completeUpload({
-                company_id: 2, // hardcoded as requested
-                upload_id: presignResponse.upload_id
-            })
-            console.log('OK - Step 3 Success - Complete response:', completeResponse)
+      // Step 3: Complete upload (inform server of successful upload)
+      console.log('Step 3: Completing upload...', presignResponse.upload_id)
+      const completeResponse = await completeUpload({
+        company_id: 2, // hardcoded as requested
+        upload_id: presignResponse.upload_id
+      })
+      console.log('OK - Step 3 Success - Complete response:', completeResponse)
 
-            return {
-                presign: presignResponse,
-                complete: completeResponse
-            }
-        },
-        retry: false
-    })
+      return {
+        presign: presignResponse,
+        complete: completeResponse
+      }
+    },
+    retry: false
+  })
+}
+
+export function useGetDocuments() {
+  const setDocs = useDocsStore((state) => state.setDocs)
+
+  const query = useQuery({
+    queryKey: ['documents', 'get'],
+    queryFn: getDocuments,
+    staleTime: 0, // Sempre considera i dati stale
+    retry: false // Non riprovare se fallisce
+  })
+
+  // Aggiorna lo store quando i dati cambiano - usando useEffect
+  useEffect(() => {
+    if (query.data) {
+      setDocs(query.data as unknown as Document[])
+    }
+  }, [query.data, setDocs])
+
+  return query
 }

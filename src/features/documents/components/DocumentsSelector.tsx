@@ -6,10 +6,11 @@ export default function DocumentsSelector() {
   const { docs } = useDocsStore()
   const { isLoading, refetch: refetchDocsData } = useGetDocuments()
 
-  const handlerAnalyze = (status: number) => {
-    if (status === 0) console.log('Document not analyzed')
-    if (status === 1) console.log('Document analyzed')
-    if (status === 2) console.log('Document Pending')
+  const handlerAnalyze = (status: number, id: number) => {
+    const docSelected = docs.filter((doc) => doc.id === id)[0]
+    if (status === 0) console.log('Document not analyzed', docSelected)
+    if (status === 1) console.log('Document analyzed', docSelected)
+    if (status === 2) console.log('Document Pending', docSelected)
   }
 
   const handlerUpdate = () => {
@@ -28,12 +29,12 @@ export default function DocumentsSelector() {
         {docs && docs.length > 0 ? (
           <div className="space-y-4 overflow-y-auto p-1">
             {docs?.map((doc) => (
-              <div key={doc.id} className="cursor-pointer rounded border border-gray-100 bg-white p-3 hover:bg-gray-50 hover:shadow-sm" onClick={() => handlerAnalyze(doc.analyzed)}>
+              <div key={doc.id} className="cursor-pointer rounded border border-gray-100 bg-white p-3 hover:bg-gray-50 hover:shadow-sm" onClick={() => handlerAnalyze(doc.analyzed, doc.id)}>
                 <div className="mb-2 flex items-start justify-between">
                   <span className="text-md font-medium text-gray-900">{doc.original_filename}</span>
                   <span
                     className={`rounded-full px-2 py-1 text-xs ${doc.analyzed === 0 ? notAnalyzedStyle : doc.analyzed === 1 ? analyzedStyle : pendingStyle}`}
-                    onClick={() => handlerAnalyze(doc.analyzed)}
+                    onClick={() => handlerAnalyze(doc.analyzed, doc.id)}
                   >
                     {/* onClick={() => handlerAnalyze(doc.analyzed)} */}
                     {doc.analyzed === 0 ? 'Not Analyzed' : doc.analyzed === 1 ? 'Analyzed' : doc.analyzed === 2 ? 'Pending' : 'Unknown'}

@@ -1,14 +1,21 @@
+import { useState } from 'react'
 import Button from '@/components/cta/Button'
 import { useDocsStore } from '@/store/docsStore'
 import { useGetDocuments } from '../api/documents.hooks'
+import DocAnalysisModal from './DocAnalysisModal'
 
 export default function DocumentsSelector() {
   const { docs } = useDocsStore()
   const { isLoading, refetch: refetchDocsData } = useGetDocuments()
+  const [modalOpen, setModalOpen] = useState(false)
+  const [selectedDocId, setSelectedDocId] = useState<number | undefined>()
 
   const handlerAnalyze = (status: number, id: number) => {
     const docSelected = docs.filter((doc) => doc.id === id)[0]
-    if (status === 0) console.log('Document not analyzed', docSelected)
+    if (status === 0) {
+      setSelectedDocId(id)
+      setModalOpen(true)
+    }
     if (status === 1) console.log('Document analyzed', docSelected)
     if (status === 2) console.log('Document Pending', docSelected)
   }
@@ -57,6 +64,12 @@ export default function DocumentsSelector() {
       <Button variant="tertiary" onClick={handlerUpdate} className="cursor-pointer" disabled={isLoading}>
         {isLoading ? 'Loading...' : 'Actualizar'}
       </Button>
+
+      <DocAnalysisModal
+        open={modalOpen}
+        onOpenChange={setModalOpen}
+        documentId={selectedDocId}
+      />
     </>
   )
 }

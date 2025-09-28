@@ -44,7 +44,16 @@ export const useDocsStore = create<DocsStore & DocsActions>()(
       setDocs: (docs: Document[]) => set({ docs }),
       clearDocs: () => set({ docs: [] }),
       addDoc: (doc: Document) => set((state) => ({ docs: [...state.docs, doc] })),
-      updateDoc: (id: number, updates: Partial<Document>) => set((state) => ({ docs: state.docs.map((doc) => (doc.id === id ? { ...doc, ...updates } : doc)) })),
+      updateDoc: (id: number, updates: Partial<Document>) =>
+        set((state) => {
+          console.log('📝 Updating doc ID:', id, 'with:', updates)
+          const updatedDocs = state.docs.map((doc) => (doc.id === id ? { ...doc, ...updates } : doc))
+          console.log(
+            '📋 Docs after update:',
+            updatedDocs.find((d) => d.id === id)
+          )
+          return { docs: updatedDocs }
+        }),
       removeDoc: (id: number) => set((state) => ({ docs: state.docs.filter((doc) => doc.id !== id) }))
     }),
     {

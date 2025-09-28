@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react'
 import { Button } from '@/components/ui/button'
 import { UploadIcon, FileIcon, XIcon, CheckCircleIcon, TestTube } from 'lucide-react'
 import { useDocumentUpload } from '@/features/documents/api'
+import { useCompanyStore } from '@/store/companyStore'
 
 type DocumentFile = {
     id: string
@@ -16,6 +17,7 @@ export type DocumentFormData = {
     title: string
     description: string
     file: DocumentFile | null
+    uploadResponse?: any
 }
 
 type DocumentFormProps = {
@@ -48,6 +50,7 @@ export function DocumentForm({
     const [dragActive, setDragActive] = useState(false)
     const fileInputRef = useRef<HTMLInputElement>(null)
     const documentUpload = useDocumentUpload()
+    const companyId = useCompanyStore((state) => state.company?.id)
 
     const handleInputChange = (field: keyof Pick<DocumentFormData, 'title' | 'description'>, value: string) => {
         setFormData((prev) => ({ ...prev, [field]: value }))
@@ -165,11 +168,47 @@ export function DocumentForm({
         return Object.keys(newErrors).length === 0
     }
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
 
-        if (validateForm()) {
-            onSubmit(formData)
+        if (validateForm() && formData.file) {
+            try {
+                if (!companyId) {
+                    setErrors(prev => ({ ...prev, file: 'Company ID is required for upload' }))
+                    return
+                }
+
+                const uploadMetadata = {
+                    company_id: companyId,
+                    kind: 'docs' as const,
+                    filename: formData.file.name,
+                    content_type: formData.file.type
+                }
+
+                console.log('Uploading document:', {
+                    title: formData.title,
+                    description: formData.description,
+                    fileName: formData.file.name,
+                    fileSize: formData.file.size,
+                    metadata: uploadMetadata
+                })
+
+                const uploadResponse = await documentUpload.mutateAsync({
+                    file: formData.file.file,
+                    metadata: uploadMetadata
+                })
+
+                console.log('Document uploaded successfully:', uploadResponse)
+
+                // Call parent onSubmit with the complete form data and upload response
+                onSubmit({
+                    ...formData,
+                    uploadResponse
+                })
+            } catch (error) {
+                console.error('Upload failed:', error)
+                setErrors(prev => ({ ...prev, file: 'Upload failed. Please try again.' }))
+            }
         }
     }
 

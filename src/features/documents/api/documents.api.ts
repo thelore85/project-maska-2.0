@@ -101,3 +101,33 @@ export async function getDocuments() {
     throw error
   }
 }
+
+export async function documentAnalysis(documentId: number) {
+  try {
+    const token = await getAccessToken()
+    const response = await fetch(`${API_BASE}/prefect/run_greenwashing_document_async`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        resource_type: 'document',
+        resource_id: documentId,
+        prob_threshold: 0.5
+      })
+    })
+
+    if (!response.ok) {
+      const error = await response.json()
+      throw new Error(`API error: ${response.status} ${error.message}`)
+    }
+
+    const result = await response.json()
+    console.log('/////////////// analysis result', result)
+    return result
+  } catch (error) {
+    console.error('Error during documentsAnalysis() api call:', error)
+    throw error
+  }
+}

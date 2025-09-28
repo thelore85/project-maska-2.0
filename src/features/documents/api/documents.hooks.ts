@@ -1,9 +1,10 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { createPresignUpload, uploadFileToAzure, completeUpload, getDocuments } from './documents.api'
+import { createPresignUpload, uploadFileToAzure, completeUpload, getDocuments, documentAnalysis } from './documents.api'
 import type { PresignUploadRequest } from './documents.types'
 import { useDocsStore } from '@/store/docsStore'
 import type { Document } from '@/store/docsStore'
 import { useEffect } from 'react'
+import { useCompanyStore } from '@/store/companyStore'
 
 export function usePresignUpload() {
   return useMutation({
@@ -18,7 +19,9 @@ type DocumentUploadParams = {
 }
 
 export function useDocumentUpload() {
+  const companyId = useCompanyStore((state) => state.company?.id)
   return useMutation({
+    mutationKey: ['documents', 'upload'],
     mutationFn: async ({ file, metadata }: DocumentUploadParams) => {
       // Step 1: Get presigned URL
       console.log('Step 1: Getting presigned URL...')
@@ -32,8 +35,11 @@ export function useDocumentUpload() {
 
       // Step 3: Complete upload (inform server of successful upload)
       console.log('Step 3: Completing upload...', presignResponse.upload_id)
+      if (!companyId) {
+        throw new Error('Company ID is required')
+      }
       const completeResponse = await completeUpload({
-        company_id: 2, // hardcoded as requested
+        company_id: companyId,
         upload_id: presignResponse.upload_id
       })
       console.log('OK - Step 3 Success - Complete response:', completeResponse)
@@ -52,17 +58,47 @@ export function useGetDocuments() {
 
   const query = useQuery({
     queryKey: ['documents', 'get'],
-    queryFn: getDocuments,
+    queryFn: () => getDocuments(),
     staleTime: 0, // Sempre considera i dati stale
+    gcTime: 0, // Non cachare i dati
+    refetchOnMount: 'always', // Sempre refetch on mount
+    refetchOnWindowFocus: true, // Refetch quando la finestra torna in focus
     retry: false // Non riprovare se fallisce
   })
 
   // Aggiorna lo store quando i dati cambiano - usando useEffect
   useEffect(() => {
     if (query.data) {
+      console.log('///////// Query response:', query.data)
       setDocs(query.data as unknown as Document[])
     }
-  }, [query.data, setDocs])
+  }, [query.data, query.dataUpdatedAt, setDocs]) // Aggiungi dataUpdatedAt come dependency
 
   return query
+}
+
+export function useDocumentAnalysis() {
+  const updateDocs = useDocsStore((state) => state.updateDoc)
+  const mutation = useMutation({
+    mutationKey: ['documents', 'analysis'],
+    mutationFn: (documentId: number) => documentAnalysis(documentId),
+    retry: false
+  })
+
+  // Aggiorna lo store quando i dati cambiano - usando useEffect
+  useEffect(() => {
+    if (mutation.data) {
+      console.log('🔍 Analysis response:', mutation.data)
+      console.log('📄 Document ID to update:', mutation.data.document_id)
+
+      if (mutation.data.resource.id) {
+        updateDocs(mutation.data.resource.id, { analyzed: 2 })
+        console.log('✅ Store updated: analyzed = 2 for doc ID:', mutation.data.document_id)
+      } else {
+        console.error('❌ No document_id in response:', mutation.data.resource.id)
+      }
+    }
+  }, [mutation.data, updateDocs])
+
+  return mutation
 }

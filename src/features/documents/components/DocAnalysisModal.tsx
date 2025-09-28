@@ -10,7 +10,7 @@ type DocAnalysisModalProps = {
 }
 
 export default function DocAnalysisModal({ open, onOpenChange, documentId }: DocAnalysisModalProps) {
-  const { mutate: documentAnalysis, data, isSuccess, error, isPending } = useDocumentAnalysis()
+  const { mutate: documentAnalysis, data, isSuccess, error, isPending, reset } = useDocumentAnalysis()
   const [analysisError, setAnalysisError] = useState<string | null>(null)
   const [analysisSuccess, setAnalysisSuccess] = useState<string | null>(null)
 
@@ -32,6 +32,15 @@ export default function DocAnalysisModal({ open, onOpenChange, documentId }: Doc
       setAnalysisError(error.message)
     }
   }, [error])
+
+  // Reset states quando il modal si chiude
+  useEffect(() => {
+    if (!open) {
+      setAnalysisError(null)
+      setAnalysisSuccess(null)
+      reset() // Reset mutation state
+    }
+  }, [open, reset])
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

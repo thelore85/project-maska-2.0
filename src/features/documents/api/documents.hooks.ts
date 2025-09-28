@@ -58,25 +58,47 @@ export function useGetDocuments() {
 
   const query = useQuery({
     queryKey: ['documents', 'get'],
-    queryFn: getDocuments,
+    queryFn: () => getDocuments(),
     staleTime: 0, // Sempre considera i dati stale
+    gcTime: 0, // Non cachare i dati
+    refetchOnMount: 'always', // Sempre refetch on mount
+    refetchOnWindowFocus: true, // Refetch quando la finestra torna in focus
     retry: false // Non riprovare se fallisce
   })
 
   // Aggiorna lo store quando i dati cambiano - usando useEffect
   useEffect(() => {
     if (query.data) {
+      console.log('///////// Query response:', query.data)
       setDocs(query.data as unknown as Document[])
     }
-  }, [query.data, setDocs])
+  }, [query.data, query.dataUpdatedAt, setDocs]) // Aggiungi dataUpdatedAt come dependency
 
   return query
 }
 
 export function useDocumentAnalysis() {
-  return useMutation({
+  const updateDocs = useDocsStore((state) => state.updateDoc)
+  const mutation = useMutation({
     mutationKey: ['documents', 'analysis'],
     mutationFn: (documentId: number) => documentAnalysis(documentId),
     retry: false
   })
+
+  // Aggiorna lo store quando i dati cambiano - usando useEffect
+  useEffect(() => {
+    if (mutation.data) {
+      console.log('🔍 Analysis response:', mutation.data)
+      console.log('📄 Document ID to update:', mutation.data.document_id)
+
+      if (mutation.data.resource.id) {
+        updateDocs(mutation.data.resource.id, { analyzed: 2 })
+        console.log('✅ Store updated: analyzed = 2 for doc ID:', mutation.data.document_id)
+      } else {
+        console.error('❌ No document_id in response:', mutation.data.resource.id)
+      }
+    }
+  }, [mutation.data, updateDocs])
+
+  return mutation
 }

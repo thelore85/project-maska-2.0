@@ -1,9 +1,10 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { createPresignUpload, uploadFileToAzure, completeUpload, getDocuments } from './documents.api'
+import { createPresignUpload, uploadFileToAzure, completeUpload, getDocuments, documentAnalysis } from './documents.api'
 import type { PresignUploadRequest } from './documents.types'
 import { useDocsStore } from '@/store/docsStore'
 import type { Document } from '@/store/docsStore'
 import { useEffect } from 'react'
+import { useCompanyStore } from '@/store/companyStore'
 
 export function usePresignUpload() {
   return useMutation({
@@ -18,7 +19,9 @@ type DocumentUploadParams = {
 }
 
 export function useDocumentUpload() {
+  const companyId = useCompanyStore((state) => state.company?.id)
   return useMutation({
+    mutationKey: ['documents', 'upload'],
     mutationFn: async ({ file, metadata }: DocumentUploadParams) => {
       // Step 1: Get presigned URL
       console.log('Step 1: Getting presigned URL...')
@@ -32,8 +35,11 @@ export function useDocumentUpload() {
 
       // Step 3: Complete upload (inform server of successful upload)
       console.log('Step 3: Completing upload...', presignResponse.upload_id)
+      if (!companyId) {
+        throw new Error('Company ID is required')
+      }
       const completeResponse = await completeUpload({
-        company_id: 2, // hardcoded as requested
+        company_id: companyId,
         upload_id: presignResponse.upload_id
       })
       console.log('OK - Step 3 Success - Complete response:', completeResponse)
@@ -65,4 +71,12 @@ export function useGetDocuments() {
   }, [query.data, setDocs])
 
   return query
+}
+
+export function useDocumentAnalysis() {
+  return useMutation({
+    mutationKey: ['documents', 'analysis'],
+    mutationFn: (documentId: number) => documentAnalysis(documentId),
+    retry: false
+  })
 }

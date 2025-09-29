@@ -1,6 +1,5 @@
 import BackupCard from '@/components/cards/HeroCard'
 import FooterApp from '@/components/layout/footer/FooterApp'
-import NavMain from '@/components/layout/navigation/NavMain'
 import Loader from '@/components/common/Loader'
 import SidebarLayout from '@/layouts/SidebarLayout'
 // import { useInitApp } from '@/hooks/hooks'
@@ -16,10 +15,7 @@ export default function ArticlesPage() {
     return (
       <>
         <SidebarLayout>
-          <NavMain />
           <ArticleMain />
-          <BackupCard />
-          <FooterApp />
         </SidebarLayout>
       </>
     )

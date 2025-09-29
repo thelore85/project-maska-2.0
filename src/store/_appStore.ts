@@ -20,7 +20,14 @@ type AppActions = {
   selectArticle: (id: number | null) => void
 }
 
-const initialState: AppStore = { init: true, cardSelected: null, articleSelected: null, claimCards: [], articleList: [], searchQuery: '' }
+const initialState: AppStore = {
+  init: true,
+  cardSelected: null,
+  articleSelected: null,
+  claimCards: [],
+  articleList: [],
+  searchQuery: ''
+}
 
 export const useStore = create<AppStore & AppActions>()(
   devtools(

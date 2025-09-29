@@ -1,38 +1,20 @@
-import { useStore } from '@/store/appStore'
 import type { TClaimCard } from '@/types/compTypes'
 import ClaimCard from '@/features/claims/components/ClaimCard'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import ClaimDetailsModal from '@/features/claims/components/ClaimDetailsModal'
 import ArticleRiskCard from './ArticleRiskCard'
+import { CLAIM_CARD_DB } from '@/lib/db'
 
 export default function ArticleMain() {
-  // Store
-  const articleSelected = useStore((store) => store.articleSelected)
-  const articleList = useStore((store) => store.articleList)
-
   // state
   const [selectedClaim, setSelectedClaim] = useState<null | TClaimCard>(null)
-  const article = articleList?.find((article) => article.article_id === articleSelected)
-
   const [low, setLow] = useState(0)
   const [middle, setMiddle] = useState(0)
   const [high, setHigh] = useState(0)
 
-  useEffect(() => {
-    if (!article) return
-
-    setLow(0)
-    setMiddle(0)
-    setHigh(0)
-
-    article.claims.forEach((claim) => {
-      const color = claim.legal_reasoning.overall.color
-      if (color === 'Rojo') setHigh((prev) => prev + 1)
-      if (color === 'Naranja') setMiddle((prev) => prev + 1)
-      if (color === 'Verde') setLow((prev) => prev + 1)
-    })
-  }, [article])
-
+  const articleList = CLAIM_CARD_DB
+  // Moke articles
+  const article = articleList[0]
   return (
     <>
       <div className="flex-1 overflow-auto py-10">

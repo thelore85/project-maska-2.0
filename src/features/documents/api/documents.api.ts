@@ -141,6 +141,13 @@ export async function getDocumentById(documentId: number) {
         'Content-Type': 'application/json'
       }
     })
+
+    if (!response.ok) {
+      throw new Error(`API error: ${response.status} ${response.statusText}`)
+    }
+
+    const result = await response.json()
+    return result
   } catch (error) {
     console.error('Error getting document by id:', error)
     throw error

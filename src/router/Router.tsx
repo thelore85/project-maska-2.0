@@ -8,61 +8,61 @@ import AuthGuard from '@/components/auth/AuthGuard'
 import DocumentsPage from '@/pages/documents/DocumentsPage'
 
 export default function Router() {
-    return (
-        <Routes>
-            {/* Public routes */}
-            <Route
-                path="/login"
-                element={
-                    <AuthGuard requireAuth={false}>
-                        <LoginPage />
-                    </AuthGuard>
-                }
-            />
-            <Route
-                path="/auth"
-                element={
-                    <AuthGuard requireAuth={false}>
-                        <AuthPage />
-                    </AuthGuard>
-                }
-            />
+  return (
+    <Routes>
+      {/* Public routes */}
+      <Route
+        path="/login"
+        element={
+          <AuthGuard requireAuth={false}>
+            <LoginPage />
+          </AuthGuard>
+        }
+      />
+      <Route
+        path="/auth"
+        element={
+          <AuthGuard requireAuth={false}>
+            <AuthPage />
+          </AuthGuard>
+        }
+      />
 
-            {/* Protected routes */}
-            <Route
-                path="/"
-                element={
-                    <AuthGuard requireAuth={true}>
-                        <AdminPage />
-                    </AuthGuard>
-                }
-            />
-            <Route
-                path="/admin"
-                element={
-                    <AuthGuard requireAuth={true}>
-                        <AdminPage />
-                    </AuthGuard>
-                }
-            />
-            <Route
-                path="/articles"
-                element={
-                    <AuthGuard requireAuth={true}>
-                        <ArticlesPage />
-                    </AuthGuard>
-                }
-            />
-            <Route
-                path="/documents"
-                element={
-                    <AuthGuard requireAuth={true}>
-                        <DocumentsPage />
-                    </AuthGuard>
-                }
-            />
+      {/* Protected routes */}
+      <Route
+        path="/"
+        element={
+          <AuthGuard requireAuth={true}>
+            <AdminPage />
+          </AuthGuard>
+        }
+      />
+      <Route
+        path="/admin"
+        element={
+          <AuthGuard requireAuth={true}>
+            <AdminPage />
+          </AuthGuard>
+        }
+      />
+      <Route
+        path="/articles/:id"
+        element={
+          <AuthGuard requireAuth={true}>
+            <ArticlesPage />
+          </AuthGuard>
+        }
+      />
+      <Route
+        path="/documents"
+        element={
+          <AuthGuard requireAuth={true}>
+            <DocumentsPage />
+          </AuthGuard>
+        }
+      />
 
-            <Route path="*" element={<NotFound />} />
-        </Routes>
-    )
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  )
 }

@@ -131,3 +131,18 @@ export async function documentAnalysis(documentId: number) {
     throw error
   }
 }
+
+export async function getDocumentById(documentId: number) {
+  try {
+    const token = await getAccessToken()
+    const response = await fetch(`${API_BASE}/documents/documents/${documentId}/view`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    })
+  } catch (error) {
+    console.error('Error getting document by id:', error)
+    throw error
+  }
+}

@@ -1,6 +1,6 @@
 import { Routes, Route } from 'react-router-dom'
 import NotFound from '@/pages/errors/NotFound'
-import ArticlesPage from '@/pages/articles/ArticlesPage'
+import SingleDocumentPage from '@/pages/documents/SingleDocumentPage'
 import AuthPage from '@/pages/auth/AuthPage'
 import LoginPage from '@/pages/auth/LoginPage'
 import AdminPage from '@/pages/admin/AdminPage'
@@ -46,10 +46,10 @@ export default function Router() {
         }
       />
       <Route
-        path="/articles/:id"
+        path="/documents/:id"
         element={
           <AuthGuard requireAuth={true}>
-            <ArticlesPage />
+            <SingleDocumentPage />
           </AuthGuard>
         }
       />

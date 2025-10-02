@@ -23,7 +23,7 @@ export default function DocumentsSelector() {
       setModalOpen(true)
     }
     if (status === 1) {
-      navigate(`/articles/${docSelected.id}`)
+      navigate(`/documents/${docSelected.id}`)
       console.log('Document analyzed', docSelected)
     }
     if (status === 2) console.log('Document Pending', docSelected)

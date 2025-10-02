@@ -1,5 +1,5 @@
 import { getAccessToken } from '@/features/auth/utils/msalClient'
-import type { PresignUploadRequest, PresignUploadResponse, CompleteUploadRequest, CompleteUploadResponse } from './documents.types'
+import type { PresignUploadRequest, PresignUploadResponse, CompleteUploadRequest, CompleteUploadResponse, DocumentByIdResponse } from './documents.types'
 
 const API_BASE = import.meta.env.VITE_API_BASE
 
@@ -132,7 +132,7 @@ export async function documentAnalysis(documentId: number) {
   }
 }
 
-export async function getDocumentById(documentId: number) {
+export async function getDocumentById(documentId: number): Promise<DocumentByIdResponse> {
   try {
     const token = await getAccessToken()
     const response = await fetch(`${API_BASE}/documents/documents/${documentId}/view`, {
@@ -147,7 +147,7 @@ export async function getDocumentById(documentId: number) {
     }
 
     const result = await response.json()
-    return result
+    return result as DocumentByIdResponse
   } catch (error) {
     console.error('Error getting document by id:', error)
     throw error

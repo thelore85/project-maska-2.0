@@ -20,9 +20,6 @@ export default function SidebarLayout({ children, title }: SidebarLayoutPorps) {
           <Link className="text-primary hover:text-secondary block p-3 font-bold" to="/documents">
             Documents
           </Link>
-          <Link className="text-primary hover:text-secondary block p-3 font-bold" to="/articles">
-            Claims
-          </Link>
           <span className="text-primary block cursor-not-allowed p-3 font-bold opacity-50 select-none">Company</span>
           <span className="text-primary block cursor-not-allowed p-3 font-bold opacity-50 select-none">Evidence</span>
           <span className="text-primary block cursor-not-allowed p-3 font-bold opacity-50 select-none">URL</span>

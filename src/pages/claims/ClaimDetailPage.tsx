@@ -13,10 +13,7 @@ export default function ClaimDetailPage() {
     if (storedClaim) {
       const parsedClaim = JSON.parse(storedClaim) as TClaimCard
       setClaim(parsedClaim)
-      console.log('Claim object:', parsedClaim)
-      console.log('Full claim data:', parsedClaim.fullClaimData)
-      console.log('Evidences:', parsedClaim.fullClaimData?.evidences)
-      console.log('Last run:', parsedClaim.fullClaimData?.last_run)
+      console.log(parsedClaim.fullClaimData)
     }
   }, [claimId])
 

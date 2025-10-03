@@ -1,4 +1,5 @@
 import type { TClaimCard } from '@/types/compTypes'
+import { useNavigate } from 'react-router-dom'
 
 type ClaimCardProps = {
   card: TClaimCard
@@ -8,9 +9,17 @@ type ClaimCardProps = {
 export default function ClaimCard({ card, setSelectedClaim }: ClaimCardProps) {
   const status = card.legal_reasoning.overall.color
   const claimCategory = card.categories
+  const navigate = useNavigate()
+
+  const handleClick = () => {
+    // Store claim in sessionStorage for the detail page
+    sessionStorage.setItem('selectedClaim', JSON.stringify(card))
+    // Navigate to claim detail page
+    navigate(`/claim/${card.claim_id}`)
+  }
 
   return (
-    <div className="w-full cursor-pointer rounded-lg border border-gray-200 bg-white p-4 transition-colors hover:bg-gray-50" onClick={() => setSelectedClaim(card)}>
+    <div className="w-full cursor-pointer rounded-lg border border-gray-200 bg-white p-4 transition-colors hover:bg-gray-50" onClick={handleClick}>
       <div className="flex items-center gap-4">
         {/* Status indicator */}
         <div className="flex items-center">

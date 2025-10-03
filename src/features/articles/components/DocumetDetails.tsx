@@ -37,6 +37,8 @@ export default function DocumentDetails({ document }: DocumentDetailsProps) {
   }, [document?.claims])
 
   // Transform API claim to TClaimCard format
+
+  console.log('////////// claim card', ClaimCard)
   const transformClaim = (claim: Claim): TClaimCard => ({
     claim_id: claim.id,
     claim: claim.claim,
@@ -57,7 +59,8 @@ export default function DocumentDetails({ document }: DocumentDetailsProps) {
         color: claim.last_run?.traffic_light === 'red' ? 'Rojo' : claim.last_run?.traffic_light === 'orange' ? 'Naranja' : claim.last_run?.traffic_light === 'green' ? 'Verde' : 'Gris',
         recommendation: claim.last_run?.explanation || ''
       }
-    }
+    },
+    fullClaimData: claim
   })
 
   if (!document) {
@@ -120,6 +123,7 @@ export default function DocumentDetails({ document }: DocumentDetailsProps) {
           <div className="space-y-4">
             {document.claims.length > 0 ? (
               document.claims.map((claim) => {
+                console.log('//////////////////////////// claim', claim)
                 const transformedClaim = transformClaim(claim)
                 return <ClaimCard key={claim.id} card={transformedClaim} setSelectedClaim={setSelectedClaim} />
               })

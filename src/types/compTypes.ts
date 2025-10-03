@@ -37,6 +37,8 @@ export type TClaimCard = {
   evidence_needed: string
   analysis: ClaimAnalysis
   legal_reasoning: LegalReasoning
+  // Full claim data from API
+  fullClaimData?: any
 }
 
 // Main article structure

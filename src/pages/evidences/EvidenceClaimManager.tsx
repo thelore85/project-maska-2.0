@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import type { TClaimCard } from '@/types/compTypes'
 import EvidenceList from '@/features/evidences/EvidenceList'
 import EvidenceSelector from '@/features/evidences/EvidenceSelector'
+import NewDocumentMenuButton from '@/features/documents/components/NewDocumentsMenuButton'
 
 export default function EvidenceClaimManager() {
   const { claimId } = useParams()
@@ -35,8 +36,15 @@ export default function EvidenceClaimManager() {
       <SidebarLayout title="Gestion de evidencias">
         <div className="flex-1 overflow-auto py-10">
           <div className="mx-auto w-full max-w-[800px] space-y-6">
-            <h2 className="mb-1 text-2xl font-bold text-gray-900">Todas las evidencias</h2>
-            <EvidenceSelector evidences={claim.fullClaimData.evidences} />
+            <div className="mb-10">
+              <div className="flex items-center justify-between">
+                <h2 className="mb-1 w-full text-2xl font-bold text-gray-900">Todas las evidencias</h2>
+                <div className="w-full max-w-[200px]">
+                  <NewDocumentMenuButton size="xs" />
+                </div>
+              </div>
+              <EvidenceSelector evidences={claim.fullClaimData.evidences} />
+            </div>
 
             <h2 className="mb-1 text-2xl font-bold text-gray-900">Evidencias en uso</h2>
             <EvidenceList evidences={claim.fullClaimData.evidences} />

@@ -1,6 +1,6 @@
 import SidebarLeft from '@/components/layout/sidebar/SidebarLeft'
 import ComanyMenuButton from '@/features/company/components/ComanyMenuButton'
-import DocumentsMenuButton from '@/features/documents/components/DocumentsMenuButton'
+import NewDocumentsMenuButton from '@/features/documents/components/NewDocumentsMenuButton'
 import NavMain from '@/components/layout/navigation/NavMain'
 import { Link } from 'react-router-dom'
 
@@ -27,7 +27,7 @@ export default function SidebarLayout({ children, title }: SidebarLayoutPorps) {
         </div>
         <div>
           <ComanyMenuButton />
-          <DocumentsMenuButton />
+          <NewDocumentsMenuButton />
         </div>
       </SidebarLeft>
       <div className="flex flex-1 flex-col">

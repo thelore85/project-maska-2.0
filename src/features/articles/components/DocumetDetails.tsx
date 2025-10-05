@@ -38,7 +38,6 @@ export default function DocumentDetails({ document }: DocumentDetailsProps) {
 
   // Transform API claim to TClaimCard format
 
-  console.log('////////// claim card', ClaimCard)
   const transformClaim = (claim: Claim): TClaimCard => ({
     claim_id: claim.id,
     claim: claim.claim,
@@ -123,7 +122,6 @@ export default function DocumentDetails({ document }: DocumentDetailsProps) {
           <div className="space-y-4">
             {document.claims.length > 0 ? (
               document.claims.map((claim) => {
-                console.log('//////////////////////////// claim', claim)
                 const transformedClaim = transformClaim(claim)
                 return <ClaimCard key={claim.id} card={transformedClaim} setSelectedClaim={setSelectedClaim} />
               })

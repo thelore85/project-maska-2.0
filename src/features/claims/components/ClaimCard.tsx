@@ -6,7 +6,7 @@ type ClaimCardProps = {
   setSelectedClaim: (card: TClaimCard) => void
 }
 
-export default function ClaimCard({ card, setSelectedClaim }: ClaimCardProps) {
+export default function ClaimCard({ card }: ClaimCardProps) {
   const status = card.legal_reasoning.overall.color
   const claimCategory = card.categories
   const navigate = useNavigate()
@@ -28,7 +28,7 @@ export default function ClaimCard({ card, setSelectedClaim }: ClaimCardProps) {
 
         {/* Content */}
         <div className="flex-1">
-          <h1 className="mb-2 text-base font-semibold text-gray-900 leading-snug">
+          <h1 className="mb-2 text-base leading-snug font-semibold text-gray-900">
             {card.claim?.slice(0, 100)} {card.claim.length > 100 && '...'}
           </h1>
           <div className="flex flex-wrap gap-1">

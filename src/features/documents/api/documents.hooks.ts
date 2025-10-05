@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { createPresignUpload, uploadFileToAzure, completeUpload, getDocuments, documentAnalysis } from './documents.api'
+import { createPresignUpload, uploadFileToAzure, completeUpload, getDocuments, documentAnalysis, getDocumentById } from './documents.api'
 import type { PresignUploadRequest } from './documents.types'
 import { useDocsStore } from '@/store/docsStore'
 import type { Document } from '@/store/docsStore'
@@ -101,4 +101,13 @@ export function useDocumentAnalysis() {
   }, [mutation.data, updateDocs])
 
   return mutation
+}
+
+export function useGetDocumentById(documentId: number) {
+  return useQuery({
+    queryKey: ['documents', 'getById', documentId],
+    queryFn: () => getDocumentById(documentId),
+    enabled: !!documentId,
+    retry: false
+  })
 }

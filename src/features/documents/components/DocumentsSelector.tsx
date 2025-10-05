@@ -3,20 +3,29 @@ import Button from '@/components/cta/Button'
 import { useDocsStore } from '@/store/docsStore'
 import { useGetDocuments } from '../api/documents.hooks'
 import DocAnalysisModal from './DocAnalysisModal'
+import { useNavigate } from 'react-router-dom'
 
 export default function DocumentsSelector() {
+  // Hooks
   const { docs } = useDocsStore()
   const { isLoading, refetch: refetchDocsData } = useGetDocuments()
+  const navigate = useNavigate()
+
+  // States
   const [modalOpen, setModalOpen] = useState(false)
   const [selectedDocId, setSelectedDocId] = useState<number | undefined>()
 
+  // Handlers
   const handlerAnalyze = (status: number, id: number) => {
     const docSelected = docs.filter((doc) => doc.id === id)[0]
     if (status === 0) {
       setSelectedDocId(id)
       setModalOpen(true)
     }
-    if (status === 1) console.log('Document analyzed', docSelected)
+    if (status === 1) {
+      navigate(`/documents/${docSelected.id}`)
+      console.log('Document analyzed', docSelected)
+    }
     if (status === 2) console.log('Document Pending', docSelected)
   }
 
@@ -65,11 +74,7 @@ export default function DocumentsSelector() {
         {isLoading ? 'Loading...' : 'Actualizar'}
       </Button>
 
-      <DocAnalysisModal
-        open={modalOpen}
-        onOpenChange={setModalOpen}
-        documentId={selectedDocId}
-      />
+      <DocAnalysisModal open={modalOpen} onOpenChange={setModalOpen} documentId={selectedDocId} />
     </>
   )
 }

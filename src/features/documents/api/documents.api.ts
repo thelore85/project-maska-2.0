@@ -1,5 +1,5 @@
 import { getAccessToken } from '@/features/auth/utils/msalClient'
-import type { PresignUploadRequest, PresignUploadResponse, CompleteUploadRequest, CompleteUploadResponse } from './documents.types'
+import type { PresignUploadRequest, PresignUploadResponse, CompleteUploadRequest, CompleteUploadResponse, DocumentByIdResponse } from './documents.types'
 
 const API_BASE = import.meta.env.VITE_API_BASE
 
@@ -128,6 +128,28 @@ export async function documentAnalysis(documentId: number) {
     return result
   } catch (error) {
     console.error('Error during documentsAnalysis() api call:', error)
+    throw error
+  }
+}
+
+export async function getDocumentById(documentId: number): Promise<DocumentByIdResponse> {
+  try {
+    const token = await getAccessToken()
+    const response = await fetch(`${API_BASE}/documents/documents/${documentId}/view`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    })
+
+    if (!response.ok) {
+      throw new Error(`API error: ${response.status} ${response.statusText}`)
+    }
+
+    const result = await response.json()
+    return result as DocumentByIdResponse
+  } catch (error) {
+    console.error('Error getting document by id:', error)
     throw error
   }
 }

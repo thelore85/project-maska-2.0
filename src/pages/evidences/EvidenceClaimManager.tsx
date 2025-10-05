@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import type { TClaimCard } from '@/types/compTypes'
 import EvidenceList from '@/features/evidences/EvidenceList'
+import EvidenceSelector from '@/features/evidences/EvidenceSelector'
 
 export default function EvidenceClaimManager() {
   const { claimId } = useParams()
@@ -34,7 +35,11 @@ export default function EvidenceClaimManager() {
       <SidebarLayout title="Gestion de evidencias">
         <div className="flex-1 overflow-auto py-10">
           <div className="mx-auto w-full max-w-[800px] space-y-6">
-            <EvidenceList claim={claim} title="Evidencias en uso" />
+            <h2 className="mb-1 text-2xl font-bold text-gray-900">Todas las evidencias</h2>
+            <EvidenceSelector evidences={claim.fullClaimData.evidences} />
+
+            <h2 className="mb-1 text-2xl font-bold text-gray-900">Evidencias en uso</h2>
+            <EvidenceList evidences={claim.fullClaimData.evidences} />
             <span className="text-sm text-gray-500">This evidence has been positive for past analysis. Will be automatically added</span>
           </div>
         </div>

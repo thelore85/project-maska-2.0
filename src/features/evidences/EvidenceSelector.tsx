@@ -1,11 +1,21 @@
+import { useEffect } from 'react'
 import EvidenceItem from './EvidenceItem'
+import { useGetEvidenceDocuments } from './api/evidences.hooks'
 
 type Props = {
   evidences: any
   title?: string
 }
 
-export default function EvidenceList({ evidences, title }: Props) {
+export default function EvidenceSelector({ evidences, title }: Props) {
+  const { data: documents } = useGetEvidenceDocuments()
+
+  useEffect(() => {
+    if (documents) {
+      console.log('Evidence documents response:', documents)
+    }
+  }, [documents])
+
   return (
     <>
       {evidences && evidences.length > 0 && (

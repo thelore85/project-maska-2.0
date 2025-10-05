@@ -7,6 +7,7 @@ import AdminPage from '@/pages/admin/AdminPage'
 import AuthGuard from '@/components/auth/AuthGuard'
 import DocumentsPage from '@/pages/documents/DocumentsPage'
 import ClaimDetailPage from '@/pages/claims/ClaimDetailPage'
+import EvidenceClaimManager from '@/pages/evidences/EvidenceClaimManager'
 
 export default function Router() {
   return (
@@ -67,6 +68,14 @@ export default function Router() {
         element={
           <AuthGuard requireAuth={true}>
             <ClaimDetailPage />
+          </AuthGuard>
+        }
+      />
+      <Route
+        path="/claim-evidence/:claimId"
+        element={
+          <AuthGuard requireAuth={true}>
+            <EvidenceClaimManager />
           </AuthGuard>
         }
       />

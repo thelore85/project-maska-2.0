@@ -101,6 +101,27 @@ export async function getDocuments() {
     throw error
   }
 }
+export async function getEvidenceDocuments() {
+  try {
+    const token = await getAccessToken()
+    const response = await fetch(`${API_BASE}/documents/ready`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    })
+
+    if (!response.ok) {
+      throw new Error(`API documents.getDocuments() error: ${response.status} -  ${response.statusText}`)
+    }
+
+    const result = await response.json()
+    return result.evidences as Document[]
+  } catch (error) {
+    console.error('Error getting documents:', error)
+    throw error
+  }
+}
 
 export async function documentAnalysis(documentId: number) {
   try {

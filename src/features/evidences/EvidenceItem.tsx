@@ -14,8 +14,8 @@ export default function EvidenceItem({ evidence }: Props) {
             <span>Useful: {evidence.useful_in_last_run ? 'Yes' : 'No'}</span>
           </div>
         </div>
-        <span className={`shrink-0 rounded-full px-2 py-0.5 text-xs font-medium ${evidence.status === 'selected' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}>
-          {evidence.status}
+        <span className={`shrink-0 rounded-full px-2 py-0.5 text-xs font-medium ${evidence.useful_in_last_run ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+          {evidence.useful_in_last_run ? 'Useful' : 'Not useful'}
         </span>
       </div>
     </div>
